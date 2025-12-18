@@ -1,0 +1,3 @@
+BasketEuropeanCall GPU MC
+S0=358.578753 K=358.578753 r=0.050000 sigma=0.406297 T=1.000000 steps=512 assets=8 rho=0.517302 paths=500000
+price=52.253218  std_error=0.118011  time_ms=99.673012

@@ -7,6 +7,7 @@
 #include <string>
 #include <chrono>
 #include <algorithm>
+#include <fstream>
 
 #include <cuda_runtime.h>
 
@@ -43,6 +44,66 @@ struct PartialResult {
   double se;
 };
 
+static void append_csv_row(
+    const std::string &path,
+    const std::string &engine,
+    const std::string &type_name,
+    int workers,
+    std::uint64_t paths,
+    int steps,
+    int assets,
+    double rho,
+    double S0,
+    double K,
+    double r,
+    double sigma,
+    double T,
+    double price,
+    double se,
+    double ms
+) {
+  bool has_content = false;
+  {
+    std::ifstream ifs(path);
+    if (ifs.good()) {
+      auto c = ifs.peek();
+      if (c != std::ifstream::traits_type::eof()) {
+        has_content = true;
+      }
+    }
+  }
+
+  std::ofstream ofs(path, std::ios::app);
+  if (!ofs) {
+    std::cerr << "Failed to open CSV file: " << path << "\n";
+    return;
+  }
+
+  if (!has_content) {
+    ofs << "engine,type,workers,paths,steps,assets,rho,"
+        << "S0,K,r,sigma,T,price,std_error,time_ms\n";
+  }
+
+  ofs.setf(std::ios::fixed);
+  ofs.precision(10);
+
+  ofs << engine << ','
+      << type_name << ','
+      << workers << ','
+      << paths << ','
+      << steps << ','
+      << assets << ','
+      << rho << ','
+      << S0 << ','
+      << K << ','
+      << r << ','
+      << sigma << ','
+      << T << ','
+      << price << ','
+      << se << ','
+      << ms << '\n';
+}
+
 int main(int argc, char **argv) {
   if (argc == 2 && (std::string(argv[1]) == "--help" || std::string(argv[1]) == "-h")) {
     usage(argv[0]);
@@ -74,6 +135,7 @@ int main(int argc, char **argv) {
   int gpus_req = std::stoi(get_arg(argc, argv, "--gpus", "1"));
   int block_size = std::stoi(get_arg(argc, argv, "--block_size", "256"));
   int blocks_per_sm = std::stoi(get_arg(argc, argv, "--blocks_per_sm", "8"));
+  std::string csv_path = get_arg(argc, argv, "--csv", "");
 
   if (paths == 0) {
     std::cerr << "paths must be > 0" << std::endl;
@@ -136,6 +198,16 @@ int main(int argc, char **argv) {
     if (type == mc::OptionType::EuropeanCall) {
       double bs = mc::black_scholes_call(S0, K, T, r, sigma);
       std::cout << "BS_analytic=" << bs << " (for comparison)" << "\n";
+    }
+
+    if (!csv_path.empty()) {
+      std::string engine = "GPU";
+      int workers = 1;
+      int csv_steps = (type == mc::OptionType::EuropeanCall) ? 1 : cfg.steps;
+      append_csv_row(csv_path, engine, type_name, workers,
+                     paths, csv_steps, cfg.assets, cfg.rho,
+                     S0, K, r, sigma, T,
+                     price, se, ms);
     }
 
     return 0;
@@ -217,6 +289,17 @@ int main(int argc, char **argv) {
             << " rho=" << rho << "\n";
   std::cout << "price=" << mean << "  std_error=" << se
             << "  time_ms=" << ms << "\n";
+
+  if (!csv_path.empty()) {
+    std::string engine = "GPU";
+    std::string type_name = "BasketEuropeanCall";
+    int workers = num_gpus;
+    int csv_steps = cfg.steps;
+    append_csv_row(csv_path, engine, type_name, workers,
+                   total_paths, csv_steps, cfg.assets, cfg.rho,
+                   S0, K, r, sigma, T,
+                   mean, se, ms);
+  }
 
   return 0;
 }

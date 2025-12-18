@@ -1,0 +1,4 @@
+EuropeanCall GPU MC
+S0=271.839996 K=271.839996 r=0.050000 sigma=0.318284 T=1.000000 paths=100000000
+price=40.571594  std_error=0.006537  time_ms=4.913619
+BS_analytic=40.572282 (for comparison)

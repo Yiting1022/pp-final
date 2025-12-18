@@ -9,6 +9,7 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <fstream>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -34,6 +35,66 @@ struct MCConfig {
   int assets = 1;
   double rho = 0.0;
 };
+
+static void append_csv_row(
+    const std::string &path,
+    const std::string &engine,
+    const std::string &type_name,
+    int workers,
+    std::uint64_t paths,
+    int steps,
+    int assets,
+    double rho,
+    double S0,
+    double K,
+    double r,
+    double sigma,
+    double T,
+    double price,
+    double se,
+    double ms
+) {
+  bool has_content = false;
+  {
+    std::ifstream ifs(path);
+    if (ifs.good()) {
+      auto c = ifs.peek();
+      if (c != std::ifstream::traits_type::eof()) {
+        has_content = true;
+      }
+    }
+  }
+
+  std::ofstream ofs(path, std::ios::app);
+  if (!ofs) {
+    std::cerr << "Failed to open CSV file: " << path << "\n";
+    return;
+  }
+
+  if (!has_content) {
+    ofs << "engine,type,workers,paths,steps,assets,rho,"
+        << "S0,K,r,sigma,T,price,std_error,time_ms\n";
+  }
+
+  ofs.setf(std::ios::fixed);
+  ofs.precision(10);
+
+  ofs << engine << ','
+      << type_name << ','
+      << workers << ','
+      << paths << ','
+      << steps << ','
+      << assets << ','
+      << rho << ','
+      << S0 << ','
+      << K << ','
+      << r << ','
+      << sigma << ','
+      << T << ','
+      << price << ','
+      << se << ','
+      << ms << '\n';
+}
 
 static inline double black_scholes_call(double S, double K, double T, double r, double sigma) {
   if (T <= 0.0) return (S > K) ? (S - K) : 0.0;
@@ -205,7 +266,8 @@ static void usage(const char *prog) {
             << "  --rho N       equicorrelation for basket (default 0.3)\n"
             << "  --paths N     Monte Carlo paths (default 2000000)\n"
             << "  --seed N      RNG seed (default 42)\n"
-            << "  --threads N   OpenMP threads (default: OMP default)\n";
+            << "  --threads N   OpenMP threads (default: OMP default)\n"
+            << "  --csv FILE    append result as one CSV row to FILE\n";
 }
 
 int main(int argc, char **argv) {
@@ -238,6 +300,7 @@ int main(int argc, char **argv) {
   std::uint64_t paths = std::stoull(get_arg(argc, argv, "--paths", "2000000"));
   std::uint64_t seed = std::stoull(get_arg(argc, argv, "--seed", "42"));
   int threads = std::stoi(get_arg(argc, argv, "--threads", "0"));
+  std::string csv_path = get_arg(argc, argv, "--csv", "");
 
 #ifdef _OPENMP
   if (threads > 0) {
@@ -283,6 +346,23 @@ int main(int argc, char **argv) {
   if (type == OptionType::EuropeanCall) {
     double bs = black_scholes_call(S0, K, T, r, sigma);
     std::cout << "BS_analytic=" << bs << " (for comparison)" << "\n";
+  }
+
+  if (!csv_path.empty()) {
+    std::string engine = "CPU";
+    std::string type_name = (type == OptionType::EuropeanCall) ? "EuropeanCall" :
+                            (type == OptionType::AsianArithmeticCall) ? "AsianArithmeticCall" :
+                            "BasketEuropeanCall";
+    int workers = 1;
+#ifdef _OPENMP
+    if (threads > 0) workers = threads;
+    else workers = omp_get_max_threads();
+#endif
+    int csv_steps = (type == OptionType::EuropeanCall) ? 1 : cfg.steps;
+    append_csv_row(csv_path, engine, type_name, workers,
+                   paths, csv_steps, cfg.assets, cfg.rho,
+                   S0, K, r, sigma, T,
+                   price, se, ms);
   }
 
   return 0;
