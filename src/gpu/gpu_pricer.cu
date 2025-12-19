@@ -60,7 +60,9 @@ static void append_csv_row(
     double T,
     double price,
     double se,
-    double ms
+    double ms,
+    int block_size = 0,
+    int blocks_per_sm = 0
 ) {
   bool has_content = false;
   {
@@ -81,7 +83,7 @@ static void append_csv_row(
 
   if (!has_content) {
     ofs << "engine,type,workers,paths,steps,assets,rho,"
-        << "S0,K,r,sigma,T,price,std_error,time_ms\n";
+        << "S0,K,r,sigma,T,price,std_error,time_ms,block_size,blocks_per_sm\n";
   }
 
   ofs.setf(std::ios::fixed);
@@ -101,7 +103,9 @@ static void append_csv_row(
       << T << ','
       << price << ','
       << se << ','
-      << ms << '\n';
+      << ms << ','
+      << block_size << ','
+      << blocks_per_sm << '\n';
 }
 
 int main(int argc, char **argv) {
@@ -207,7 +211,7 @@ int main(int argc, char **argv) {
       append_csv_row(csv_path, engine, type_name, workers,
                      paths, csv_steps, cfg.assets, cfg.rho,
                      S0, K, r, sigma, T,
-                     price, se, ms);
+                     price, se, ms, block_size, blocks_per_sm);
     }
 
     return 0;
@@ -298,7 +302,7 @@ int main(int argc, char **argv) {
     append_csv_row(csv_path, engine, type_name, workers,
                    total_paths, csv_steps, cfg.assets, cfg.rho,
                    S0, K, r, sigma, T,
-                   mean, se, ms);
+                   mean, se, ms, block_size, blocks_per_sm);
   }
 
   return 0;
