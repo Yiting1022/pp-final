@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>report.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="monte-carlo-pricing-optimization-cpu-vs-gpu">Monte Carlo Pricing Optimization (CPU vs GPU)</h1>
+<blockquote>
+<p>Parallel Programming Final Project — Group 23<br>
+Members: David Lu (T14902116), 蔡琦皇 (P13922006), 楊翊廷 (R14944018), 詹淯翔 (B13201026)</p>
+</blockquote>
+<h3 id="introduction">Introduction</h3>
+<p>Monte Carlo (MC) simulation is one of the most flexible approaches for option pricing, especially for products without closed-form solutions or with complex payoffs (e.g., Asian options) and higher-dimensional problems (e.g., basket/multi-asset options). However, MC is computationally expensive: achieving low statistical error typically requires <strong>millions to billions of paths</strong> and (for path-dependent products) <strong>hundreds of time steps</strong>, which can be too slow on CPUs for latency-sensitive use cases.</p>
+<p>This project implements MC option pricing with <strong>three levels of parallelism</strong>:</p>
+<ul>
+<li><strong>CPU OpenMP</strong> (multi-core parallel paths)</li>
+<li><strong>Single-GPU CUDA</strong> (massively parallel path simulation)</li>
+<li><strong>Multi-GPU CUDA</strong> (distribute paths across multiple GPUs for basket pricing)</li>
+</ul>
+<p>In addition, we calibrate simple GBM parameters from real historical data (<code>data/</code>) and benchmark performance/scalability under different workloads.</p>
+<h3 id="method">Method</h3>
+<h4 id="1-stochastic-model-gbm">1) Stochastic model (GBM)</h4>
+<p>We simulate the underlying asset price using Geometric Brownian Motion (GBM):</p>
+<p>$
+S_{t+\Delta t} = S_t \cdot \exp\left(\left(r - \frac{1}{2}\sigma^2\right)\Delta t + \sigma\sqrt{\Delta t},Z\right),\quad Z\sim\mathcal{N}(0,1)
+$</p>
+<p>For multi-asset baskets, we generate <strong>correlated Gaussian vectors</strong> Z using an equicorrelation covariance structure and <strong>Cholesky decomposition</strong>  $igma = LL^\top , then apply  y = Lz .$</p>
+<h4 id="2-payoffs-implemented">2) Payoffs implemented</h4>
+<p>This repo implements three core payoffs (plus different experiment groupings):</p>
+<ul>
+<li><strong>European Call (single asset)</strong>: payoff depends only on terminal price S_T.
+<ul>
+<li>Validation: compare MC estimate vs <strong>Black–Scholes closed-form</strong>.</li>
+</ul>
+</li>
+<li><strong>Asian Arithmetic Call (single asset)</strong>: payoff depends on arithmetic average along the path.</li>
+<li><strong>Basket European Call (multi-asset)</strong>: payoff depends on arithmetic mean of terminal prices across assets; correlation handled via Cholesky.</li>
+</ul>
+<p>CPU implementation: <code>src/cpu/mc_pricer.cpp</code><br>
+GPU implementation: <code>src/gpu/gpu_pricer.cu</code> + core kernel/workspace in <code>src/gpu/mc_pricer.cu</code></p>
+<h4 id="3-parallelization-strategy">3) Parallelization strategy</h4>
+<ul>
+<li>
+<p><strong>CPU (OpenMP)</strong>: each thread simulates independent paths (per-thread RNG seeded by thread id).</p>
+<ul>
+<li>Implementation: OpenMP parallel loop in <code>src/cpu/mc_pricer.cpp</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>GPU (CUDA)</strong>:</p>
+<ul>
+<li>RNG: per-thread cuRAND Philox states (<code>curandStatePhilox4_32_10_t</code>).</li>
+<li>Kernel design: grid-stride loop where each CUDA thread processes many paths.</li>
+<li>Accumulation: atomic accumulation of sum and sum of squares to compute mean and standard error.</li>
+<li>Workspace reuse: allocate device buffers once (states/sum/sum2) and reuse across calls.</li>
+<li>Implementation: <code>src/gpu/mc_pricer.cu</code> (kernel <code>mc_kernel_general</code>, workspace <code>GpuWorkspace</code>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Multi-GPU (basket)</strong>:</p>
+<ul>
+<li>Split total paths across devices; each GPU runs the basket kernel on its portion.</li>
+<li>Combine partial means/variances to produce final mean and standard error.</li>
+<li>Implementation: <code>src/gpu/gpu_pricer.cu</code> (multi-GPU path splitting + merge).</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-parameter-calibration-from-real-data">4) Parameter calibration from real data</h4>
+<p>We calibrate basic GBM parameters from historical CSVs:</p>
+<ul>
+<li>S_0: last close price</li>
+<li>\sigma: annualized volatility from daily log returns</li>
+<li>\rho: average off-diagonal correlation for the multi-asset set</li>
+</ul>
+<p>Implementation: <code>src/tools/calibrate_from_data.py</code><br>
+Outputs a shell script <code>params.sh</code> used by <code>src/cpu/run_all.sh</code> and <code>src/gpu/run_all.sh</code>.</p>
+<h3 id="experiment">Experiment</h3>
+<p>All experiments are scripted and write results as CSV rows with timing and standard error, then generate plots.</p>
+<h4 id="1-how-experiments-are-run">1) How experiments are run</h4>
+<ul>
+<li><strong>GPU experiments</strong>: <code>src/gpu/run_experiments.sh</code></li>
+<li><strong>CPU experiments</strong>: <code>src/cpu/run_experiments.sh</code></li>
+<li><strong>Run everything + plot</strong>: <code>src/run_all_experiments.sh</code></li>
+<li><strong>Plotting</strong>: <code>src/plot_experiments.py</code> (reads <code>src/experiments/results/*.csv</code>, writes <code>src/experiments/plots/*.png</code>)</li>
+</ul>
+<h4 id="2-experiment-dimensions-what-we-vary">2) Experiment dimensions (what we vary)</h4>
+<p>From the proposal and the actual scripts, the repo benchmarks:</p>
+<ul>
+<li><strong>Paths scaling</strong>: vary number of Monte Carlo paths N (GPU goes up to 10^9 paths in script; CPU uses smaller N).</li>
+<li><strong>Steps scaling</strong>: vary time steps (e.g., 64, 128, 252, 512) for Asian/basket discretization.</li>
+<li><strong>CPU threads scaling</strong> (OpenMP): vary thread count for basket.</li>
+<li><strong>Multi-GPU scaling</strong> (basket): vary number of GPUs (1/2/4) and measure speedup.</li>
+<li><strong>Assets scaling</strong> (basket): vary number of assets (2/4/8/16/32) to show dimensionality cost.</li>
+<li><strong>GPU configuration tuning</strong>: block size and blocks-per-SM (occupancy) tuning.</li>
+<li><strong>Option type comparison</strong>: compare European vs Asian vs Basket under same path counts.</li>
+<li><strong>Direct GPU vs CPU comparison</strong>: for multiple option types under aligned path counts.</li>
+</ul>
+<h4 id="3-outputs">3) Outputs</h4>
+<p>Results are written to:</p>
+<ul>
+<li><code>src/experiments/results/*.csv</code></li>
+</ul>
+<p>Plots are written to:</p>
+<ul>
+<li><code>src/experiments/plots/*.png</code></li>
+</ul>
+<p>Each CSV row includes (examples): engine, type, workers (threads or GPUs), paths, steps, assets, rho, S0/K/r/sigma/T, price, std_error, time_ms (and GPU tuning fields for block size).</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>Based on the project slides and the implemented experiments:</p>
+<ul>
+<li><strong>GPU acceleration is substantial</strong> for MC pricing because paths are embarrassingly parallel.</li>
+<li><strong>Complexity increases significantly</strong> as we move from single-asset to multi-asset basket pricing due to correlation handling (Cholesky and matrix-vector operations) and higher dimensional simulation.</li>
+<li><strong>Speedup characteristics differ by product</strong>:
+<ul>
+<li>Asian option shows a relatively consistent GPU speedup in the reported results.</li>
+<li>European option speedup depends more on path count (GPU becomes more favorable for larger workloads).</li>
+</ul>
+</li>
+<li><strong>Best GPU configuration (from block tuning in slides)</strong>:
+<ul>
+<li>Block size ≈ <strong>256</strong></li>
+<li>Occupancy setting ≈ <strong>2 blocks per SM</strong></li>
+</ul>
+</li>
+<li>Overall, the repo demonstrates that CUDA (and multi-GPU for basket) can reduce runtime dramatically while keeping pricing accuracy consistent (standard error decreases with more paths, and European can be validated against Black–Scholes).</li>
+</ul>
+<h3 id="work-distribution">Work Distribution</h3>
+<ul>
+<li><strong>David Lu (T14902116)</strong>: Presentation</li>
+<li><strong>蔡琦皇 (P13922006)</strong>: CPU baseline implementation (OpenMP Monte Carlo pricer)、single-asset implementation、CPU experiment scripts.</li>
+<li><strong>楊翊廷 (R14944018)</strong>: Experiment design/automation and results visualization (CSV schema, plotting scripts, figure generation),multi-asset implementation、Data calibration tooling from real market CSVs and integration into run pipelines</li>
+<li><strong>詹淯翔 (B13201026)</strong>: report generation.</li>
+</ul>
+<p>ref.</p>
+<ul>
+<li>1.An introduction to Monte Carlo methods [https://arxiv.org/pdf/1404.0209]</li>
+<li>2.GitHub [https://github.com/Yiting1022/pp-final.git]</li>
+</ul>
+
+</body>
+</html>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ tex2jax: {inlineMath: [['$', '$']]}, messageStyle: "none" });</script>
